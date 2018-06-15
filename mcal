@@ -1,0 +1,116 @@
+#!/usr/bin/env bash
+#### CALENDARIO MODIFICADO PARA P2P MOOC 6#################################################################
+##  cal [ [mes] año]                                                                                     ##
+###########################################################################################################
+#La sintaxis del nuevo comando será:                                                                     ##
+#    mcal [mes] [año]                                                                                    ##
+#    Es decir, se puede proporcionar sólo el mes, sólo el año o ambos                                    ##
+#    Además de la funcionalidad anterior, el comando debe tener las siguientes características:          ##
+#                                                                                                        ##
+#    El comando ha de implementar una opción de ayuda (-help) para mostrar el uso básico del comando.    ##
+#    El comando ha de implementar un control básico de errores: número incorrecto de argumentos, mes     ##
+#    o año incorrectamente especificados, etc.                                                           ##
+#    Los meses pueden especificarse mediante un número entre 1 y 12 y por su nombre o abreviatura en     ##
+#    inglés y en español.                                                                                ##
+#    Documente el script con líneas de comentario para que resulte legible y fácilmente mantenible       ##
+#    Se valorará cualquier funcionalidad adicional útil y razonable.                                     ##
+#    También es útil conocer que el siguiente comando:                                                   ##
+#                                                                                                         #
+#   Esta práctica se evalúa por pares, ejecutando el script con, al menos, los siguientes casos de prueba:#
+###########################################################################################################
+
+# llamado el ejecutable debe de reconocer primero si entran 1 o 2 argumentos o texto,
+#
+
+
+#        mcal               #Proporciona el calendario del mes actual.
+#        mcal 1             #Proporciona el calendario de enero del año actual.
+#        mcal ene           #Proporciona el calendario de enero del año actual.
+#        mcal jan           #Proporciona el calendario de enero del año actual.
+#        mcal 1 1           #Proporciona el calendario de enero del año 1.
+#        mcal 2018          #Proporciona el calendario del año 2018.
+#        mcal 2018 > temp   #Escribe en el fichero de nombre temp el calendario del año 2018.
+#        mcal -help         #Proporciona en consola el texto de ayuda.
+#        mcal -help >temp2  #Proporciona en consola el texto de ayuda.
+#        mcal 13            #Proporciona el calendario del año 13.
+#                           #El listado anterior no contempla la posible necesidad de utilización
+#                           #de paths absolutos o relativos (o la actualización de la variable de
+#                           #entorno PATH) para la correcta localización del fichero por el
+#                           #interprete de comandos.
+
+NOMSCRIPT=`basename $0` #nombre del script
+##########################################
+valor=12
+anoactual=2018
+mesactual=$(date +%m)
+vacio=""
+arg3=$1
+arg4=$2
+entrada=$arg3
+#FUNCION QUE PERMITE TRADUCIR LOS NOMBRES DE MES O ABREVIATURAS DE TRES LETRAS EN ESPAÑOL O INGLÉS
+#EN MINÚSCULA A SU POSICIÓN DEL 1 AL 12.
+obtenmes () {
+case $entrada in
+enero|ene|january|jan|1 ) resultado=1 ;;
+feb|febrero|february|2 ) resultado=2;;
+mar|marzo|march|3 ) resultado=3;;
+abr|abril|apr|april|4 ) resultado=4;;
+mayo|may|5 ) resultado=5;;
+junio|jun|june|6 ) resultado=6;;
+jul|julio|july|7 ) resultado=7;;
+ago|agosto|august|aug|8 ) resultado=8;;
+sep|septiembre|setiembre|september|9 ) resultado=9;;
+oct|octubre|october|10 ) resultado=10;;
+nov|noviembre|november|11 ) resultado=11;;
+dic|diciembre|december|dec|12 ) resultado=12;;
+*) resultado=$entrada
+esac
+}
+#####invocamos la funcion####
+#obtenmes
+#############################
+obtenmes
+#############################
+calendario () #funcion de calendario
+{
+
+    if [[ $arg3 = "ayuda" ]]
+then
+    echo "######################################################"
+    echo "###         COMO USAR ${NOMSCRIPT}                         ###"
+    echo "######################################################"
+    echo "######################################################"
+    echo "###    mcal ene o jan o 1 dara: enero de 2018      ###"
+    echo "###    mcal enero o jannuary 1 2017 : dara....     ###"
+    echo "###    mcal ga grabara la ayuda en fichero gayuda  ###"
+    echo "###    mcal gc grabara el calendario en gcalendario###"
+    echo "######################################################"
+    elif [[ $arg3 = "ga" ]]
+    then
+        echo `$PWD/mcal ayuda` >  $PWD/gayuda
+    elif [[ $arg3 = "gc" ]]
+    then
+        echo `$PWD/mcal` > $PWD/gcalendario
+
+    elif [[ $resultado -eq $vacio ]] && [[ $arg4 -eq $vacio ]]
+    then
+        ncal -M -C $mesactual $anoactual
+        echo " quieres ayuda teclea mcal ayuda"
+    elif [[ $resultado -le $valor ]] && [[ $arg4 -eq $vacio ]]
+    then
+        ncal -M -C $resultado $anoactual
+        echo " quieres ayuda teclea mcal ayuda"
+    elif [[ $resultado -le $valor ]] && [[ $arg4 -ge 0 ]]
+    then
+        ncal -M -C $resultado $arg4
+        echo " quieres ayuda teclea mcal ayuda"
+    else
+        ncal -M -C $arg3 $arg4
+        echo " quieres ayuda teclea mcal ayuda"
+     fi
+}
+#####invocamos la funcion####
+#calendario
+#############################
+calendario
+exit $?
